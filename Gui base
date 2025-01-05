@@ -1,0 +1,72 @@
+ import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class BankManagementSystem extends JFrame implements ActionListener {
+    private JTextField amountField;
+    private JLabel balanceLabel;
+    private double balance = 0.0;
+
+    public BankManagementSystem() {
+        setTitle("Bank Management System");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new FlowLayout());
+
+        balanceLabel = new JLabel("Balance: ₹0.00");
+        add(balanceLabel);
+
+        amountField = new JTextField(15);
+        add(amountField);
+
+        JButton depositButton = new JButton("Deposit");
+        depositButton.addActionListener(this);
+        add(depositButton);
+
+        JButton withdrawButton = new JButton("Withdraw");
+        withdrawButton.addActionListener(this);
+        add(withdrawButton);
+
+        JButton balanceButton = new JButton("Check Balance");
+        balanceButton.addActionListener(this);
+        add(balanceButton);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+        try {
+            double amount = Double.parseDouble(amountField.getText());
+            if (amount <= 0) {
+                throw new NumberFormatException();
+            }
+            switch (command) {
+                case "Deposit":
+                    balance += amount;
+                    break;
+                case "Withdraw":
+                    if (balance >= amount) {
+                        balance -= amount;
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Insufficient funds.");
+                    }
+                    break;
+                case "Check Balance":
+                    JOptionPane.showMessageDialog(this, "Current balance: ₹" + balance);
+                    return;
+            }
+            balanceLabel.setText("Balance: ₹" + balance);
+            amountField.setText("");
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid amount.");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            BankManagementSystem frame = new BankManagementSystem();
+            frame.setVisible(true);
+        });
+    }
+}
